@@ -1,11 +1,8 @@
-set(mikanSource
-  ${mikanSource}
-  ${CMAKE_CURRENT_SOURCE_DIR}/Debug.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/Engine.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/Entity.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/EntityLoader.cc
-  PARENT_SCOPE
-)
+cmake_minimum_required(VERSION 2.8)
+project(mikan CXX)
+
+add_subdirectory(src)
+include_directories(include)
 
 add_library(
   mikan
