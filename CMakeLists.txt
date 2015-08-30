@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(mikan CXX)
 
 add_subdirectory(src)
-include_directories(include)
+include_directories(include/mikan)
 
 add_library(
   mikan
