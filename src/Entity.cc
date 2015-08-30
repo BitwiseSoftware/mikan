@@ -1,7 +1,7 @@
 #include "Entity.hh"
 
 #include <algorithm>
-#include "../Mikan/Engine.hh"
+#include "Engine.hh"
 
 namespace Mikan {
 
