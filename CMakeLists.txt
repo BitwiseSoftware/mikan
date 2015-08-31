@@ -3,6 +3,7 @@ project(mikan CXX)
 
 add_subdirectory(src)
 include_directories(include/mikan)
+include_directories(opt/json/include)
 
 add_library(
   mikan
