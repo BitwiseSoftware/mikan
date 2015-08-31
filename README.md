@@ -22,3 +22,8 @@ $ cd mikan
 $ mkdir build && cd build
 $ make
 ```
+
+# Requirements
+* C++11 compatible compiler
+* CMake v2.8+
+* SFML 2.1+ (apt-get install libsfml-dev)
