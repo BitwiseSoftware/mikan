@@ -6,7 +6,7 @@
 namespace Mikan {
 
 // Initialize static variables
-std::unique_ptr<sf::RenderWindow>  Engine::window;
+std::unique_ptr<sf::RenderWindow> Engine::window;
 sf::RenderTexture Engine::terrain_layer;
 sf::RenderTexture Engine::ui_layer;
 const std::string Engine::ROOT_DIR = "../";
@@ -19,6 +19,24 @@ Engine::Engine() : paused(false) {
 
   camera.zoom(.1);
   camera.setCenter(0, 0);
+
+  add_keyboard_action({sf::Keyboard::W, sf::Keyboard::Up},
+                      [this](double delta_seconds) {
+                        camera.move(sf::Vector2f(0, -100 * delta_seconds));
+                      });
+
+  add_keyboard_action({sf::Keyboard::A, sf::Keyboard::Left},
+                      [this](double delta_seconds) {
+                        camera.move(sf::Vector2f(-100 * delta_seconds, 0));
+                      });
+  add_keyboard_action({sf::Keyboard::S, sf::Keyboard::Down},
+                      [this](double delta_seconds) {
+                        camera.move(sf::Vector2f(0, 100 * delta_seconds));
+                      });
+  add_keyboard_action({sf::Keyboard::D, sf::Keyboard::Right},
+                      [this](double delta_seconds) {
+                        camera.move(sf::Vector2f(100 * delta_seconds, 0));
+                      });
 }
 
 void Engine::run() {
@@ -31,7 +49,7 @@ void Engine::run() {
     if (paused) {
       continue;
     }
-    control_camera(delta_seconds);
+    control_keyboard_actions(delta_seconds);
 
     // Needs to keep tranparency
     terrain_layer.clear(sf::Color(0, 0, 0, 0));
@@ -61,9 +79,8 @@ void Engine::init_window() {
   sf::ContextSettings settings;
   settings.antialiasingLevel = 16;
 
-  window.reset(
-      new sf::RenderWindow(sf::VideoMode(1024, 768), "Pax Atlas", sf::Style::Default, settings)
-  );
+  window.reset(new sf::RenderWindow(sf::VideoMode(1024, 768), "Pax Atlas",
+                                    sf::Style::Default, settings));
   window->setFramerateLimit(60);
 }
 
@@ -72,22 +89,13 @@ void Engine::init_layers() {
   ui_layer.create(1000, 1000);
 }
 
-void Engine::control_camera(const float delta_seconds) {
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)
-      || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-    camera.move(sf::Vector2f(0, -100 * delta_seconds));
-  }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)
-      || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-    camera.move(sf::Vector2f(-100 * delta_seconds, 0));
-  }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)
-      || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-    camera.move(sf::Vector2f(0, 100 * delta_seconds));
-  }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)
-      || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-    camera.move(sf::Vector2f(100 * delta_seconds, 0));
+void Engine::control_keyboard_actions(const float delta_seconds) {
+  for (auto keyboard_action : keyboard_actions) {
+    for (auto key : keyboard_action.first) {
+      if (sf::Keyboard::isKeyPressed(key)) {
+        keyboard_action.second(delta_seconds);
+      }
+    }
   }
 }
 
@@ -119,4 +127,3 @@ void Engine::control_window(const float delta_seconds) {
 }
 
 } // namespace Mikan
-
